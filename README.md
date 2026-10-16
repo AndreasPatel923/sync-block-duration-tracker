@@ -30,3 +30,10 @@ The trade-off is that only *synchronous* execution is measured. If the wrapped f
 ## Awkward edge
 
 The constructor takes an optional `now: () => number` so tests can inject a fake clock instead of sleeping and asserting against real wall-clock time. If you pass your own, make sure it returns a *monotonic* millisecond value (like `performance.now`), not a `Date.now()`-style epoch in seconds, or `maxMs`/`minMs` comparisons will still work but the units in `totalMs` will be surprising.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
